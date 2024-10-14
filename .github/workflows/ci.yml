@@ -1,0 +1,23 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  call-deploy:
+    uses: ./.github/workflows/deploy.yml
+    with:
+      environment: 'production'
+
+  check-job-status:
+    needs: call-deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Deploy Status
+        run: echo "Build status was ${{ needs.call-deploy.outputs.build-status }}"
